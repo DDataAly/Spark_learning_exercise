@@ -1,0 +1,11 @@
+{
+  "paths": {
+    "raw_data_dir": "data/raw/",
+    "processed_data_dir": "data/ready/"
+  },
+  "binance": {
+    "base_url": "https://api.binance.com/api/v3/klines",
+    "tickers": ["BTCUSDT", "ETHUSDT", "SOLUSDT"],
+    "interval": "1m"
+  }
+}
