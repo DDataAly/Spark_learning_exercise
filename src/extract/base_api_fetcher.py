@@ -2,18 +2,8 @@ import requests
 import logging
 
 class TradingPlatform:
-    def __init__(
-        self,
-        name: str,
-        url: str,
-        tickers: list,
-        interval: str
-    ):
+    def __init__(self, name: str):
         self.name = name
-        self.url = url
-        self.tickers = tickers 
-        self.interval = interval
-
 
     def _build_request_params(self, **kwargs): # Using kwargs to show that children implementations of this method will have some parameters
         raise NotImplementedError("Method must be implemented in subclasses")
