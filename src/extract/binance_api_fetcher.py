@@ -10,11 +10,13 @@ from datetime import datetime, timedelta
 from .base_api_fetcher import TradingPlatform
 from src.utils.time_conversion import convert_datetime_to_unix_in_ms as dt_to_ms, convert_unix_in_ms_to_datetime as ms_to_dt, calculate_chunk_end_time
 from src.utils.save_raw_data import save_json
+import logging
 
 
 CANDLE_OPEN_TIME = 0
 CANDLE_CLOSE_TIME = 6
 CHUNK_OVERLAP_SEC = 190
+logger=logging.getLogger('binance')
 
 
 class Binance(TradingPlatform):    
@@ -94,15 +96,14 @@ class Binance(TradingPlatform):
         current_start_time = chunk_start_time
 
         while True:
-            print("Fetching data...")
+            logger.debug("Fetching data...")
             data = self.get_ticker_data (ticker, start_time=current_start_time)
 
             if not data:
                 break
 
-            print(
-                f"First candle open: {datetime.fromtimestamp(data[0][CANDLE_OPEN_TIME]/1000)}, "
-                f"Last candle open: {datetime.fromtimestamp(data[-1][CANDLE_OPEN_TIME]/1000)}"
+            logger.debug(
+                f"First candle open: {datetime.fromtimestamp(data[0][CANDLE_OPEN_TIME]/1000)}, Last candle open: {datetime.fromtimestamp(data[-1][CANDLE_OPEN_TIME]/1000)}"
                 )           
             raw_chunk.extend(data)
             current_start_time = data[-1][CANDLE_OPEN_TIME] + 1
@@ -125,16 +126,16 @@ class Binance(TradingPlatform):
         chunk_start_time = dt_to_ms(start_time) #1762605502839
         chunk_end_time = calculate_chunk_end_time(chunk_start_time, chunk_size_in_months) #1756605502839
 
-        print("Now (end of the whole period):", end_time)
-        print("Start of whole period:", start_time)
+        logger.debug(f"Now (=end of the whole period): {end_time}")
+        logger.debug(f"Start of whole period: {start_time}")
 
         previous_candle_open_time = chunk_start_time
 
 
         while chunk_end_time <= dt_to_ms(end_time):
-            print('Starting a loop')
-            print("Chunk start (ms):", chunk_start_time, "or", ms_to_dt (chunk_start_time))
-            print("Chunk end (ms):", chunk_end_time, "or", ms_to_dt(chunk_end_time))
+            logger.debug('Starting a loop')
+            logger.debug(f"Chunk start (ms): {chunk_start_time}, or {ms_to_dt (chunk_start_time)}")
+            logger.debug(f"Chunk end (ms): {chunk_end_time}, or {ms_to_dt(chunk_end_time)}")
 
             if self.missing_data_detected (previous_candle_open_time, chunk_start_time):
                 print('Data is not continuos')
@@ -151,7 +152,7 @@ class Binance(TradingPlatform):
             chunk_start_time = chunk_end_time
             chunk_end_time = calculate_chunk_end_time(chunk_start_time, chunk_size_in_months)
             
-            print(f'Data chunk is saved successfully. The length of the current data chunk is {len(raw_chunk)}')
+            logger.debug(f'Data chunk is saved successfully. The length of the current data chunk is {len(raw_chunk)}')
 
 
 
