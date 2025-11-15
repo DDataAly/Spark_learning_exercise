@@ -1,7 +1,8 @@
 {
   "paths": {
     "raw_data_dir": "data/raw/",
-    "processed_data_dir": "data/ready/"
+    "processed_data_dir": "data/ready/",
+    "logs": "logs/"
   },
   "binance": {
     "url": "https://api.binance.com/api/v3/klines",
