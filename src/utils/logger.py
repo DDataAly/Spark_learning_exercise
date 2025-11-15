@@ -1,12 +1,14 @@
 import logging
 from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
-from config_loader import load_config
+from .config_loader import load_config
 import os
 
 logger = logging.getLogger()
 logger.setLevel("DEBUG")
-formatter = logging.Formatter("{asctime} - {levelname} - {message}", style = '{', datefmt="%Y-%m-%d %H:%M")
+formatter = logging.Formatter("{asctime} - {levelname} - {name} - {message}", style = '{', datefmt="%Y-%m-%d %H:%M")
+
+logging.getLogger('urllib3').setLevel(logging.WARNING)
 
 console_handler = logging.StreamHandler()
 console_handler.setLevel('INFO')
